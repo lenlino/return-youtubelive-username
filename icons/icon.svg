@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="128" height="128" rx="24" fill="#FF0000"/>
+
+  <!-- White chat bubble -->
+  <path d="M 32 45 L 96 45 L 96 75 L 70 75 L 64 83 L 58 75 L 32 75 Z"
+        fill="white"
+        stroke="white"
+        stroke-width="2"/>
+
+  <!-- Chat lines representing text -->
+  <line x1="42" y1="55" x2="86" y2="55" stroke="#FF0000" stroke-width="3" stroke-linecap="round"/>
+  <line x1="42" y1="64" x2="75" y2="64" stroke="#FF0000" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- @ symbol for handle -->
+  <circle cx="64" cy="95" r="12" fill="white"/>
+  <text x="64" y="102" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#FF0000" text-anchor="middle">@</text>
+</svg>
