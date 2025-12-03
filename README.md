@@ -1,4 +1,4 @@
-# YouTube Live Chat Username Enhancer
+# return-youtube-live-username
 
 YouTubeのライブチャットで、ユーザー名の表示形式を自由に切り替えられるChrome拡張機能です。
 
