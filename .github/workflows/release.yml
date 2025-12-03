@@ -1,0 +1,79 @@
+name: Release Extension
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get version from tag
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Update manifest version
+        run: |
+          sed -i "s/\"version\": \".*\"/\"version\": \"${{ steps.get_version.outputs.VERSION }}\"/" manifest.json
+
+      - name: Create distribution directory
+        run: |
+          mkdir -p dist
+
+      - name: Copy extension files
+        run: |
+          cp manifest.json dist/
+          cp content.js dist/
+          cp inject.js dist/
+          cp popup.html dist/
+          cp popup.js dist/
+          cp popup.css dist/
+          cp README.md dist/
+          if [ -d "icons" ]; then
+            cp -r icons dist/
+          fi
+
+      - name: Create ZIP archive
+        run: |
+          cd dist
+          zip -r ../return-youtube-live-username-${{ steps.get_version.outputs.VERSION }}.zip .
+          cd ..
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ steps.get_version.outputs.VERSION }}
+          body: |
+            ## YouTube Live Chat Username Enhancer v${{ steps.get_version.outputs.VERSION }}
+
+            ### インストール方法
+            1. 下のZIPファイルをダウンロード
+            2. ZIPファイルを解凍
+            3. Chromeで`chrome://extensions/`を開く
+            4. 「デベロッパーモード」をON
+            5. 「パッケージ化されていない拡張機能を読み込む」をクリック
+            6. 解凍したフォルダーを選択
+
+            ### 変更内容
+            リリースノートをここに記載してください。
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./youtube-live-chat-enhancer-${{ steps.get_version.outputs.VERSION }}.zip
+          asset_name: youtube-live-chat-enhancer-${{ steps.get_version.outputs.VERSION }}.zip
+          asset_content_type: application/zip

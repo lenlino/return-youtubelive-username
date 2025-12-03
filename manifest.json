@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "YouTube Live Chat Username Enhancer",
-  "version": "1.0",
-  "description": "Displays usernames in 'Username (Handle ID)' format in YouTube Live chat.",
+  "name": "return-youtube-live-username",
+  "version": "1.0.0",
+  "description": "YouTube ライブチャットで以前のユーザー名で表示されるようにします。",
   "permissions": ["storage"],
   "action": {
     "default_popup": "popup.html"
