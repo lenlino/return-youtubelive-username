@@ -75,22 +75,36 @@
     };
 
     const updateAllMessages = () => {
-        document.querySelectorAll('yt-live-chat-text-message-renderer').forEach(node => {
-            const authorChip = node.querySelector('yt-live-chat-author-chip');
-            if (authorChip && authorChip.dataset.originalName) {
-                const authorName = authorChip.dataset.originalName;
-                const handle = authorChip.dataset.channelHandle;
-                updateAuthorName(authorChip, authorName, handle);
-            }
+        const messageSelectors = [
+            'yt-live-chat-text-message-renderer',
+            'yt-live-chat-paid-message-renderer',
+            'yt-live-chat-membership-item-renderer',
+            'yt-live-chat-paid-sticker-renderer'
+        ];
+
+        messageSelectors.forEach(selector => {
+            document.querySelectorAll(selector).forEach(node => {
+                const authorChip = node.querySelector('yt-live-chat-author-chip');
+                if (authorChip && authorChip.dataset.originalName) {
+                    const authorName = authorChip.dataset.originalName;
+                    const handle = authorChip.dataset.channelHandle;
+                    updateAuthorName(authorChip, authorName, handle);
+                }
+            });
         });
     };
 
     const processMessageNode = async (node) => {
-        // Ensure it's a message renderer node
-        if (node.nodeType !== 1 || !node.matches('yt-live-chat-text-message-renderer')) {
+        // Check if it's a text message or paid message (Super Chat, Super Sticker, membership)
+        const isTextMessage = node.matches('yt-live-chat-text-message-renderer');
+        const isPaidMessage = node.matches('yt-live-chat-paid-message-renderer');
+        const isMembershipItem = node.matches('yt-live-chat-membership-item-renderer');
+        const isPaidSticker = node.matches('yt-live-chat-paid-sticker-renderer');
+
+        if (!isTextMessage && !isPaidMessage && !isMembershipItem && !isPaidSticker) {
             return;
         }
-        
+
         const authorChip = node.querySelector('yt-live-chat-author-chip');
         if (!authorChip) {
             // This can happen with system messages, so not necessarily an error.
@@ -114,7 +128,7 @@
             return;
         }
 
-        if (DEBUG) console.log(`[YT Handle Enhancer] Processing: ${authorName}`);
+        if (DEBUG) console.log(`[YT Handle Enhancer] Processing: ${authorName} (${isPaidMessage ? 'Super Chat' : isTextMessage ? 'Text' : isMembershipItem ? 'Membership' : 'Sticker'})`);
 
         if (channelHandleCache.has(channelId)) {
             const handle = channelHandleCache.get(channelId);
@@ -126,30 +140,54 @@
             const handle = await fetchHandle(channelId);
             if (handle) {
                 channelHandleCache.set(channelId, handle);
-                
+
                 // Find all messages from the same author (including the current one) and update them
-                document.querySelectorAll('yt-live-chat-text-message-renderer').forEach(n => {
-                    const d = n.__data || n.data;
-                    if (d && d.authorExternalChannelId === channelId) {
-                        const c = n.querySelector('yt-live-chat-author-chip');
-                        if (c) {
-                            updateAuthorName(c, d.authorName.simpleText, handle);
+                const selectors = [
+                    'yt-live-chat-text-message-renderer',
+                    'yt-live-chat-paid-message-renderer',
+                    'yt-live-chat-membership-item-renderer',
+                    'yt-live-chat-paid-sticker-renderer'
+                ];
+
+                selectors.forEach(selector => {
+                    document.querySelectorAll(selector).forEach(n => {
+                        const d = n.__data || n.data;
+                        if (d && d.authorExternalChannelId === channelId) {
+                            const c = n.querySelector('yt-live-chat-author-chip');
+                            if (c) {
+                                updateAuthorName(c, d.authorName.simpleText, handle);
+                            }
                         }
-                    }
+                    });
                 });
             }
         }
     };
 
     const observer = new MutationObserver((mutations) => {
+        const messageSelectors = [
+            'yt-live-chat-text-message-renderer',
+            'yt-live-chat-paid-message-renderer',
+            'yt-live-chat-membership-item-renderer',
+            'yt-live-chat-paid-sticker-renderer'
+        ];
+
         for (const mutation of mutations) {
             for (const node of mutation.addedNodes) {
                 if (node.nodeType !== 1) continue;
-                
-                if (node.matches('yt-live-chat-text-message-renderer')) {
-                    processMessageNode(node);
+
+                // Check if the node itself matches any of the message types
+                for (const selector of messageSelectors) {
+                    if (node.matches(selector)) {
+                        processMessageNode(node);
+                        break;
+                    }
                 }
-                node.querySelectorAll('yt-live-chat-text-message-renderer').forEach(processMessageNode);
+
+                // Check for message nodes within the added node
+                messageSelectors.forEach(selector => {
+                    node.querySelectorAll(selector).forEach(processMessageNode);
+                });
             }
         }
     });
@@ -158,8 +196,16 @@
         const chat = document.querySelector('yt-live-chat-app');
         if (chat) {
             if (DEBUG) console.log('[YT Handle Enhancer] Chat app found. Starting observer.');
-            // Process existing messages first
-            chat.querySelectorAll('yt-live-chat-text-message-renderer').forEach(processMessageNode);
+            // Process existing messages first (all types)
+            const messageSelectors = [
+                'yt-live-chat-text-message-renderer',
+                'yt-live-chat-paid-message-renderer',
+                'yt-live-chat-membership-item-renderer',
+                'yt-live-chat-paid-sticker-renderer'
+            ];
+            messageSelectors.forEach(selector => {
+                chat.querySelectorAll(selector).forEach(processMessageNode);
+            });
             // Then observe for new ones
             observer.observe(chat, { childList: true, subtree: true });
             return true;
