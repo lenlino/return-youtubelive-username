@@ -12,11 +12,11 @@
     "description": "ポップアップ設定ページのタイトル"
   },
   "displayModeBoth": {
-    "message": "両方表示 (名前 (ハンドル))",
+    "message": "両方表示 (ユーザー名 (ハンドル))",
     "description": "ユーザー名とハンドルの両方を表示するオプション"
   },
   "displayModeNameOnly": {
-    "message": "名前のみ",
+    "message": "ユーザー名のみ",
     "description": "ユーザー名のみを表示するオプション"
   },
   "displayModeHandleOnly": {

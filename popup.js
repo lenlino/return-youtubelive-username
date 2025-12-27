@@ -32,14 +32,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             statusDiv.textContent = chrome.i18n.getMessage('settingsSaved');
             statusDiv.classList.add('show');
 
-            // Send message to content scripts to update display
+            // Reload all YouTube tabs to apply new settings
             const tabs = await chrome.tabs.query({ url: 'https://www.youtube.com/*' });
             tabs.forEach(tab => {
-                chrome.tabs.sendMessage(tab.id, {
-                    type: 'displayModeChanged',
-                    mode: mode
-                }).catch(() => {
-                    // Ignore errors (tab might not have content script loaded)
+                chrome.tabs.reload(tab.id).catch(() => {
+                    // Ignore errors (tab might not exist anymore)
                 });
             });
 
