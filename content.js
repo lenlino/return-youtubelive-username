@@ -20,6 +20,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 // Handle requests for current display mode from injected script
 window.addEventListener('message', async (event) => {
     if (event.source !== window) return;
+
     if (event.data.type === 'getDisplayMode') {
         // Get the current display mode from storage and send it to the injected script
         const result = await chrome.storage.sync.get({ displayMode: 'both' });
@@ -27,5 +28,31 @@ window.addEventListener('message', async (event) => {
             type: 'displayModeChanged',
             mode: result.displayMode
         }, '*');
+    }
+
+    if (event.data.type === 'fetchRSS') {
+        // Handle RSS fetch request (for CORS bypass on studio.youtube.com)
+        const { channelId, messageId } = event.data;
+
+        // Use background script to bypass CORS
+        chrome.runtime.sendMessage({
+            type: 'fetchRSS',
+            channelId: channelId
+        }, (response) => {
+            if (response && response.success) {
+                window.postMessage({
+                    type: 'rssFetchResponse',
+                    messageId: messageId,
+                    success: true,
+                    title: response.title
+                }, '*');
+            } else {
+                window.postMessage({
+                    type: 'rssFetchResponse',
+                    messageId: messageId,
+                    success: false
+                }, '*');
+            }
+        });
     }
 });

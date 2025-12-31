@@ -33,8 +33,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             statusDiv.classList.add('show');
 
             // Reload all YouTube tabs to apply new settings
-            const tabs = await chrome.tabs.query({ url: 'https://www.youtube.com/*' });
-            tabs.forEach(tab => {
+            const youtubeTabs = await chrome.tabs.query({ url: 'https://www.youtube.com/*' });
+            const studioTabs = await chrome.tabs.query({ url: 'https://studio.youtube.com/*' });
+            const allTabs = [...youtubeTabs, ...studioTabs];
+            allTabs.forEach(tab => {
                 chrome.tabs.reload(tab.id).catch(() => {
                     // Ignore errors (tab might not exist anymore)
                 });

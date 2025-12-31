@@ -23,26 +23,61 @@
     const fetchHandle = async (channelId) => {
         if (DEBUG) console.log(`[YT Handle Enhancer] Fetching RSS feed for: ${channelId}`);
         try {
-            const response = await fetch(`https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`);
-            if (!response.ok) {
-                console.error(`[YT Handle Enhancer] RSS Feed fetch failed with status: ${response.status}`);
+            // Check if we're on studio.youtube.com (CORS restriction)
+            const isStudio = window.location.hostname === 'studio.youtube.com';
+
+            if (isStudio) {
+                // Use message passing to content script to bypass CORS
+                return new Promise((resolve) => {
+                    const messageId = `fetch_${channelId}_${Date.now()}`;
+                    const handler = (event) => {
+                        if (event.source !== window) return;
+                        if (event.data.type === 'rssFetchResponse' && event.data.messageId === messageId) {
+                            window.removeEventListener('message', handler);
+                            if (event.data.success && event.data.title) {
+                                if (DEBUG) console.log(`[YT Handle Enhancer] Found channel title: ${event.data.title}`);
+                                resolve(event.data.title);
+                            } else {
+                                console.error(`[YT Handle Enhancer] RSS Feed fetch failed`);
+                                resolve(null);
+                            }
+                        }
+                    };
+                    window.addEventListener('message', handler);
+                    window.postMessage({
+                        type: 'fetchRSS',
+                        channelId: channelId,
+                        messageId: messageId
+                    }, '*');
+
+                    // Timeout after 5 seconds
+                    setTimeout(() => {
+                        window.removeEventListener('message', handler);
+                        resolve(null);
+                    }, 5000);
+                });
+            } else {
+                // Direct fetch for www.youtube.com
+                const response = await fetch(`https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`);
+                if (!response.ok) {
+                    console.error(`[YT Handle Enhancer] RSS Feed fetch failed with status: ${response.status}`);
+                    return null;
+                }
+
+                const text = await response.text();
+
+                // Extract the <title> tag content
+                const titleMatch = text.match(/<title>([^<]+)<\/title>/);
+
+                if (titleMatch && titleMatch[1]) {
+                    const channelTitle = titleMatch[1];
+                    if (DEBUG) console.log(`[YT Handle Enhancer] Found channel title: ${channelTitle}`);
+                    return channelTitle; // Returning the title instead of the handle
+                }
+
+                if (DEBUG) console.warn(`[YT Handle Enhancer] Could not find <title> in RSS feed for ${channelId}`);
                 return null;
             }
-
-            const text = await response.text();
-
-            // Extract the <title> tag content
-            const titleMatch = text.match(/<title>([^<]+)<\/title>/);
-
-            if (titleMatch && titleMatch[1]) {
-                const channelTitle = titleMatch[1];
-                if (DEBUG) console.log(`[YT Handle Enhancer] Found channel title: ${channelTitle}`);
-                return channelTitle; // Returning the title instead of the handle
-            }
-
-            if (DEBUG) console.warn(`[YT Handle Enhancer] Could not find <title> in RSS feed for ${channelId}`);
-            return null;
-
         } catch (error) {
             console.error('[YT Handle Enhancer] Failed to fetch RSS feed:', error);
         }
