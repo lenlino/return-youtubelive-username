@@ -55,14 +55,14 @@
             let displayText;
             switch (displayMode) {
                 case 'name':
-                    displayText = authorName;
+                    displayText = handle || authorName;
                     break;
                 case 'handle':
-                    displayText = handle || authorName;
+                    displayText = authorName;
                     break;
                 case 'both':
                 default:
-                    displayText = handle ? `${authorName} (${handle})` : authorName;
+                    displayText = handle ? `${handle} (${authorName})` : authorName;
                     break;
             }
 
