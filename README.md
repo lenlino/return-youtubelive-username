@@ -4,7 +4,8 @@ YouTubeのライブチャットで、ユーザー名の表示形式を自由に�
 
 > **Note**: このプロジェクトのコードはAI(Claude)によって生成されました。
 
-ダウンロードはこちら: https://github.com/lenlino/return-youtubelive-username/releases/latest/download/return-youtubelive-username.zip 
+Chrome Web Storeから導入
+https://chromewebstore.google.com/detail/return-youtube-live-usern/ehbabbhdhafdkmjdpfalggpndpjkleil
 
 ## 機能
 
