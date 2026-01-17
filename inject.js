@@ -4,6 +4,7 @@
     const DEBUG = false;
 
     const channelHandleCache = new Map();
+    const nicknameCache = new Map();
     let displayMode = 'both'; // 'both', 'name', 'handle'
     const CACHE_DURATION = 7 * 24 * 60 * 60 * 1000; // 1 week in milliseconds
 
@@ -20,10 +21,22 @@
             channelHandleCache.clear();
             if (DEBUG) console.log('[YT Handle Enhancer] Cache cleared');
         }
+        if (event.data.type === 'nicknamesLoaded') {
+            const nicknames = event.data.nicknames || {};
+            nicknameCache.clear();
+            Object.entries(nicknames).forEach(([channelId, nickname]) => {
+                nicknameCache.set(channelId, nickname);
+            });
+            if (DEBUG) console.log(`[YT Handle Enhancer] Loaded ${nicknameCache.size} nicknames`);
+            updateAllMessages();
+        }
     });
 
     // Load initial display mode from storage
     window.postMessage({ type: 'getDisplayMode' }, '*');
+
+    // Load nicknames from storage
+    window.postMessage({ type: 'loadNicknames' }, '*');
 
     // Load cache from chrome.storage.local
     const loadCache = async () => {
@@ -130,9 +143,21 @@
         return null;
     };
 
-    const updateAuthorName = (authorChip, authorName, handle) => {
+    const updateAuthorName = (authorChip, authorName, handle, channelId) => {
         const authorNameElement = authorChip.querySelector('#author-name');
         if (authorNameElement) {
+            // Check for nickname first
+            const nickname = nicknameCache.get(channelId);
+            if (nickname) {
+                if (DEBUG) console.log(`[YT Handle Enhancer] Using nickname: ${nickname} for ${authorName}`);
+                authorNameElement.textContent = nickname;
+                authorChip.dataset.handleModified = 'true';
+                authorChip.dataset.originalName = authorName;
+                authorChip.dataset.channelHandle = handle || '';
+                authorChip.dataset.channelId = channelId;
+                return;
+            }
+
             let displayText;
             switch (displayMode) {
                 case 'name':
@@ -152,6 +177,7 @@
             authorChip.dataset.handleModified = 'true';
             authorChip.dataset.originalName = authorName;
             authorChip.dataset.channelHandle = handle || '';
+            authorChip.dataset.channelId = channelId;
         }
     };
 
@@ -169,7 +195,8 @@
                 if (authorChip && authorChip.dataset.originalName) {
                     const authorName = authorChip.dataset.originalName;
                     const handle = authorChip.dataset.channelHandle;
-                    updateAuthorName(authorChip, authorName, handle);
+                    const channelId = authorChip.dataset.channelId;
+                    updateAuthorName(authorChip, authorName, handle, channelId);
                 }
             });
         });
@@ -214,7 +241,7 @@
         if (channelHandleCache.has(channelId)) {
             const handle = channelHandleCache.get(channelId);
             if (handle) {
-                updateAuthorName(authorChip, authorName, handle);
+                updateAuthorName(authorChip, authorName, handle, channelId);
             }
         } else {
             channelHandleCache.set(channelId, null); // Mark as pending to avoid refetching
@@ -237,7 +264,7 @@
                         if (d && d.authorExternalChannelId === channelId) {
                             const c = n.querySelector('yt-live-chat-author-chip');
                             if (c) {
-                                updateAuthorName(c, d.authorName.simpleText, handle);
+                                updateAuthorName(c, d.authorName.simpleText, handle, channelId);
                             }
                         }
                     });

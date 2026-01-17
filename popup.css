@@ -14,28 +14,44 @@ body {
 .container {
     background: white;
     padding: 20px;
+    text-align: center;
 }
 
-.header {
+.header-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 16px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid #e0e0e0;
+    min-height: 24px;
 }
 
 h1 {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 600;
     color: #202124;
     margin: 0;
+}
+
+.status {
+    padding: 6px 12px;
+    background-color: #4caf50;
+    color: white;
+    border-radius: 4px;
+    font-size: 12px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    white-space: nowrap;
+}
+
+.status.show {
+    opacity: 1;
 }
 
 .settings {
     display: flex;
     flex-direction: column;
     gap: 12px;
+    margin-bottom: 16px;
 }
 
 .radio-option {
@@ -56,7 +72,7 @@ h1 {
     width: 18px;
     height: 18px;
     cursor: pointer;
-    accent-color: #ff0000;
+    accent-color: #1976d2;
 }
 
 .radio-option span {
@@ -65,39 +81,19 @@ h1 {
     cursor: pointer;
 }
 
-.status {
-    padding: 6px 12px;
-    background-color: #4caf50;
-    color: white;
-    border-radius: 4px;
-    font-size: 12px;
-    opacity: 0;
-    transition: opacity 0.3s;
-    white-space: nowrap;
-}
-
-.status.show {
-    opacity: 1;
-}
-
-.cache-section {
-    margin-top: 16px;
-    padding-top: 12px;
-    border-top: 1px solid #e0e0e0;
-}
-
-#clearCache {
+#openSettings {
     width: 100%;
-    padding: 10px;
-    background-color: #f44336;
+    padding: 12px;
+    background-color: #1976d2;
     color: white;
     border: none;
     border-radius: 4px;
     font-size: 14px;
+    font-weight: 500;
     cursor: pointer;
     transition: background-color 0.2s;
 }
 
-#clearCache:hover {
-    background-color: #d32f2f;
+#openSettings:hover {
+    background-color: #1565c0;
 }

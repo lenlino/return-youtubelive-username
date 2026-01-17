@@ -12,7 +12,7 @@
     "description": "ポップアップ設定ページのタイトル"
   },
   "displayModeBoth": {
-    "message": "両方表示 (ユーザー名 (ハンドル))",
+    "message": "両方表示(ユーザー名(ハンドル))",
     "description": "ユーザー名とハンドルの両方を表示するオプション"
   },
   "displayModeNameOnly": {
@@ -34,5 +34,53 @@
   "cacheCleared": {
     "message": "キャッシュをクリアしました",
     "description": "キャッシュがクリアされたときのステータスメッセージ"
+  },
+  "nicknameTitle": {
+    "message": "ニックネーム設定",
+    "description": "ニックネーム設定のタイトル"
+  },
+  "manageNicknames": {
+    "message": "ニックネームを管理",
+    "description": "ニックネーム管理ボタン"
+  },
+  "searchPlaceholder": {
+    "message": "チャンネル名で検索...",
+    "description": "検索ボックスのプレースホルダー"
+  },
+  "nicknamePlaceholder": {
+    "message": "ニックネームを設定...",
+    "description": "ニックネーム入力のプレースホルダー"
+  },
+  "removeNickname": {
+    "message": "削除",
+    "description": "ニックネーム削除ボタン"
+  },
+  "openSettings": {
+    "message": "設定を開く",
+    "description": "設定ページを開くボタン"
+  },
+  "settingsPageTitle": {
+    "message": "設定",
+    "description": "設定ページのタイトル"
+  },
+  "displayTab": {
+    "message": "表示",
+    "description": "表示タブ"
+  },
+  "nicknameTab": {
+    "message": "ニックネーム",
+    "description": "ニックネームタブ"
+  },
+  "cacheTab": {
+    "message": "キャッシュ",
+    "description": "キャッシュタブ"
+  },
+  "cacheTitle": {
+    "message": "キャッシュ設定",
+    "description": "キャッシュ設定のタイトル"
+  },
+  "cacheDescription": {
+    "message": "チャンネル名のキャッシュは1週間保存され、サーバーへのリクエストを削減します。",
+    "description": "キャッシュの説明"
   }
 }

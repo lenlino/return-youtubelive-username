@@ -8,14 +8,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
+    // Display settings
     const radioButtons = document.querySelectorAll('input[name="displayMode"]');
-    const statusDiv = document.getElementById('status');
+    const displayStatus = document.getElementById('displayStatus');
 
     // Load saved settings
     const result = await chrome.storage.sync.get({ displayMode: 'both' });
     const savedMode = result.displayMode;
 
-    // Set the radio button to match saved setting
     radioButtons.forEach(radio => {
         if (radio.value === savedMode) {
             radio.checked = true;
@@ -28,46 +28,26 @@ document.addEventListener('DOMContentLoaded', async () => {
             const mode = e.target.value;
             await chrome.storage.sync.set({ displayMode: mode });
 
-            // Show status message
-            statusDiv.textContent = chrome.i18n.getMessage('settingsSaved');
-            statusDiv.classList.add('show');
+            displayStatus.textContent = chrome.i18n.getMessage('settingsSaved');
+            displayStatus.classList.add('show');
 
             // Reload all YouTube tabs to apply new settings
             const youtubeTabs = await chrome.tabs.query({ url: 'https://www.youtube.com/*' });
             const studioTabs = await chrome.tabs.query({ url: 'https://studio.youtube.com/*' });
             const allTabs = [...youtubeTabs, ...studioTabs];
             allTabs.forEach(tab => {
-                chrome.tabs.reload(tab.id).catch(() => {
-                    // Ignore errors (tab might not exist anymore)
-                });
+                chrome.tabs.reload(tab.id).catch(() => {});
             });
 
             setTimeout(() => {
-                statusDiv.classList.remove('show');
+                displayStatus.classList.remove('show');
             }, 2000);
         });
     });
 
-    // Handle cache clear button
-    const clearCacheBtn = document.getElementById('clearCache');
-    clearCacheBtn.addEventListener('click', () => {
-        chrome.storage.local.remove(['channelCache'], () => {
-            statusDiv.textContent = chrome.i18n.getMessage('cacheCleared');
-            statusDiv.classList.add('show');
-
-            // Notify all tabs to clear their in-memory cache
-            const youtubeTabs = chrome.tabs.query({ url: 'https://www.youtube.com/*' });
-            const studioTabs = chrome.tabs.query({ url: 'https://studio.youtube.com/*' });
-            Promise.all([youtubeTabs, studioTabs]).then(([yt, st]) => {
-                const allTabs = [...yt, ...st];
-                allTabs.forEach(tab => {
-                    chrome.tabs.sendMessage(tab.id, { type: 'clearCache' }).catch(() => {});
-                });
-            });
-
-            setTimeout(() => {
-                statusDiv.classList.remove('show');
-            }, 2000);
-        });
+    // Open settings page
+    const openSettingsBtn = document.getElementById('openSettings');
+    openSettingsBtn.addEventListener('click', () => {
+        chrome.tabs.create({ url: chrome.runtime.getURL('settings.html') });
     });
 });

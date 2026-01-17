@@ -1,3 +1,13 @@
+// Check if extension context is valid
+function isContextValid() {
+    try {
+        chrome.runtime.getURL('');
+        return true;
+    } catch {
+        return false;
+    }
+}
+
 // Inject the script
 const s = document.createElement('script');
 s.src = chrome.runtime.getURL('inject.js');
@@ -7,9 +17,10 @@ s.onload = function() {
 (document.head || document.documentElement).appendChild(s);
 
 // Listen for messages from popup
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((message) => {
+    if (!isContextValid()) return;
+
     if (message.type === 'displayModeChanged') {
-        // Forward the message to the injected script
         window.postMessage({
             type: 'displayModeChanged',
             mode: message.mode
@@ -17,74 +28,109 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }
 
     if (message.type === 'clearCache') {
-        // Forward the clear cache message to the injected script
         window.postMessage({ type: 'clearCache' }, '*');
+    }
+
+    if (message.type === 'nicknameUpdated') {
+        window.postMessage({ type: 'loadNicknames' }, '*');
     }
 });
 
 // Handle requests for current display mode from injected script
 window.addEventListener('message', async (event) => {
-    if (event.source !== window) return;
+    if (event.source !== window || !isContextValid()) return;
 
     if (event.data.type === 'getDisplayMode') {
-        // Get the current display mode from storage and send it to the injected script
-        const result = await chrome.storage.sync.get({ displayMode: 'both' });
-        window.postMessage({
-            type: 'displayModeChanged',
-            mode: result.displayMode
-        }, '*');
+        try {
+            const result = await chrome.storage.sync.get({ displayMode: 'both' });
+            window.postMessage({
+                type: 'displayModeChanged',
+                mode: result.displayMode
+            }, '*');
+        } catch (error) {
+            console.error('[Content Script] Error getting display mode:', error);
+        }
     }
 
     if (event.data.type === 'loadCache') {
-        // Load cache from chrome.storage.local
-        chrome.storage.local.get(['channelCache'], (result) => {
+        try {
+            const result = await chrome.storage.local.get(['channelCache']);
             window.postMessage({
                 type: 'cacheLoaded',
                 cache: result.channelCache || {}
             }, '*');
-        });
+        } catch (error) {
+            console.error('[Content Script] Error loading cache:', error);
+        }
     }
 
     if (event.data.type === 'saveCache') {
-        // Save cache entry to chrome.storage.local
-        const { channelId, title, timestamp } = event.data;
-        chrome.storage.local.get(['channelCache'], (result) => {
+        try {
+            const { channelId, title, timestamp } = event.data;
+            const result = await chrome.storage.local.get(['channelCache']);
             const cache = result.channelCache || {};
             cache[channelId] = { title, timestamp };
-            chrome.storage.local.set({ channelCache: cache });
-        });
+            await chrome.storage.local.set({ channelCache: cache });
+        } catch (error) {
+            console.error('[Content Script] Error saving cache:', error);
+        }
     }
 
     if (event.data.type === 'clearCache') {
-        // Clear all cache
-        chrome.storage.local.remove(['channelCache'], () => {
+        try {
+            await chrome.storage.local.remove(['channelCache']);
             window.postMessage({ type: 'cacheCleared' }, '*');
-        });
+        } catch (error) {
+            console.error('[Content Script] Error clearing cache:', error);
+        }
+    }
+
+    if (event.data.type === 'loadNicknames') {
+        try {
+            const result = await chrome.storage.local.get(['nicknames']);
+            window.postMessage({
+                type: 'nicknamesLoaded',
+                nicknames: result.nicknames || {}
+            }, '*');
+        } catch (error) {
+            console.error('[Content Script] Error loading nicknames:', error);
+        }
     }
 
     if (event.data.type === 'fetchRSS') {
-        // Handle RSS fetch request (for CORS bypass on studio.youtube.com)
-        const { channelId, messageId } = event.data;
+        try {
+            const { channelId, messageId } = event.data;
+            chrome.runtime.sendMessage({
+                type: 'fetchRSS',
+                channelId: channelId
+            }, (response) => {
+                if (chrome.runtime.lastError) {
+                    console.error('[Content Script] Runtime error:', chrome.runtime.lastError);
+                    window.postMessage({
+                        type: 'rssFetchResponse',
+                        messageId: messageId,
+                        success: false
+                    }, '*');
+                    return;
+                }
 
-        // Use background script to bypass CORS
-        chrome.runtime.sendMessage({
-            type: 'fetchRSS',
-            channelId: channelId
-        }, (response) => {
-            if (response && response.success) {
-                window.postMessage({
-                    type: 'rssFetchResponse',
-                    messageId: messageId,
-                    success: true,
-                    title: response.title
-                }, '*');
-            } else {
-                window.postMessage({
-                    type: 'rssFetchResponse',
-                    messageId: messageId,
-                    success: false
-                }, '*');
-            }
-        });
+                if (response && response.success) {
+                    window.postMessage({
+                        type: 'rssFetchResponse',
+                        messageId: messageId,
+                        success: true,
+                        title: response.title
+                    }, '*');
+                } else {
+                    window.postMessage({
+                        type: 'rssFetchResponse',
+                        messageId: messageId,
+                        success: false
+                    }, '*');
+                }
+            });
+        } catch (error) {
+            console.error('[Content Script] Error fetching RSS:', error);
+        }
     }
 });

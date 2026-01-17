@@ -34,5 +34,53 @@
   "cacheCleared": {
     "message": "Cache cleared",
     "description": "Status message when cache is cleared"
+  },
+  "nicknameTitle": {
+    "message": "Nickname Settings",
+    "description": "Title for nickname settings"
+  },
+  "manageNicknames": {
+    "message": "Manage Nicknames",
+    "description": "Button to manage nicknames"
+  },
+  "searchPlaceholder": {
+    "message": "Search by channel name...",
+    "description": "Placeholder for search box"
+  },
+  "nicknamePlaceholder": {
+    "message": "Set nickname...",
+    "description": "Placeholder for nickname input"
+  },
+  "removeNickname": {
+    "message": "Remove",
+    "description": "Button to remove nickname"
+  },
+  "openSettings": {
+    "message": "Open Settings",
+    "description": "Button to open settings page"
+  },
+  "settingsPageTitle": {
+    "message": "Settings",
+    "description": "Settings page title"
+  },
+  "displayTab": {
+    "message": "Display",
+    "description": "Display tab"
+  },
+  "nicknameTab": {
+    "message": "Nicknames",
+    "description": "Nickname tab"
+  },
+  "cacheTab": {
+    "message": "Cache",
+    "description": "Cache tab"
+  },
+  "cacheTitle": {
+    "message": "Cache Settings",
+    "description": "Cache settings title"
+  },
+  "cacheDescription": {
+    "message": "Cached channel names are stored for 1 week to reduce server requests.",
+    "description": "Cache description"
   }
 }

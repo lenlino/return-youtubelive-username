@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - YouTube Live Chat</title>
+    <link rel="stylesheet" href="settings.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 data-i18n="settingsPageTitle">Settings</h1>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-button active" data-tab="nickname" data-i18n="nicknameTab">Nicknames</button>
+            <button class="tab-button" data-tab="cache" data-i18n="cacheTab">Cache</button>
+        </div>
+
+        <div class="tab-content active" id="nickname-tab">
+            <h2 data-i18n="nicknameTitle">Nickname Settings</h2>
+            <div class="search-box">
+                <input type="text" id="nicknameSearch" placeholder="Search by channel name..." data-i18n-placeholder="searchPlaceholder">
+            </div>
+            <div class="nickname-list" id="nicknameList"></div>
+        </div>
+
+        <div class="tab-content" id="cache-tab">
+            <h2 data-i18n="cacheTitle">Cache Settings</h2>
+            <p data-i18n="cacheDescription">Cached channel names are stored for 1 week to reduce server requests.</p>
+            <button id="clearCache" data-i18n="clearCache">Clear Cache</button>
+            <div class="status" id="cacheStatus"></div>
+        </div>
+    </div>
+    <script src="settings.js"></script>
+</body>
+</html>

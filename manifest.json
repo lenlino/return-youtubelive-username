@@ -3,7 +3,7 @@
   "name": "__MSG_extensionName__",
   "version": "1.0.3",
   "description": "__MSG_extensionDescription__",
-  "default_locale": "en",
+  "default_locale": "ja",
   "permissions": ["storage", "tabs"],
   "host_permissions": ["https://www.youtube.com/*", "https://studio.youtube.com/*"],
   "background": {
