@@ -8,7 +8,10 @@
 </head>
 <body>
     <div class="container">
-        <h1 data-i18n="popupTitle">Display Settings</h1>
+        <div class="header">
+            <h1 data-i18n="popupTitle">Display Settings</h1>
+            <div class="status" id="status"></div>
+        </div>
         <div class="settings">
             <label class="radio-option">
                 <input type="radio" name="displayMode" value="both" checked>
@@ -23,7 +26,9 @@
                 <span data-i18n="displayModeHandleOnly">Handle Only</span>
             </label>
         </div>
-        <div class="status" id="status"></div>
+        <div class="cache-section">
+            <button id="clearCache" data-i18n="clearCache">Clear Cache</button>
+        </div>
     </div>
     <script src="popup.js"></script>
 </body>

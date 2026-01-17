@@ -5,8 +5,9 @@
 
     const channelHandleCache = new Map();
     let displayMode = 'both'; // 'both', 'name', 'handle'
+    const CACHE_DURATION = 7 * 24 * 60 * 60 * 1000; // 1 week in milliseconds
 
-    // Listen for display mode changes
+    // Listen for display mode changes and cache clear
     window.addEventListener('message', (event) => {
         if (event.source !== window) return;
         if (event.data.type === 'displayModeChanged') {
@@ -15,10 +16,55 @@
             // Update all existing messages
             updateAllMessages();
         }
+        if (event.data.type === 'clearCache') {
+            channelHandleCache.clear();
+            if (DEBUG) console.log('[YT Handle Enhancer] Cache cleared');
+        }
     });
 
     // Load initial display mode from storage
     window.postMessage({ type: 'getDisplayMode' }, '*');
+
+    // Load cache from chrome.storage.local
+    const loadCache = async () => {
+        return new Promise((resolve) => {
+            window.postMessage({ type: 'loadCache' }, '*');
+            const handler = (event) => {
+                if (event.source !== window) return;
+                if (event.data.type === 'cacheLoaded') {
+                    window.removeEventListener('message', handler);
+                    const cache = event.data.cache || {};
+                    const now = Date.now();
+                    // Load valid cache entries
+                    Object.entries(cache).forEach(([channelId, entry]) => {
+                        if (entry.timestamp && (now - entry.timestamp) < CACHE_DURATION) {
+                            channelHandleCache.set(channelId, entry.title);
+                        }
+                    });
+                    if (DEBUG) console.log(`[YT Handle Enhancer] Loaded ${channelHandleCache.size} cached entries`);
+                    resolve();
+                }
+            };
+            window.addEventListener('message', handler);
+            setTimeout(() => {
+                window.removeEventListener('message', handler);
+                resolve();
+            }, 1000);
+        });
+    };
+
+    // Save cache entry
+    const saveCacheEntry = (channelId, title) => {
+        window.postMessage({
+            type: 'saveCache',
+            channelId: channelId,
+            title: title,
+            timestamp: Date.now()
+        }, '*');
+    };
+
+    // Initialize cache
+    loadCache();
 
     const fetchHandle = async (channelId) => {
         if (DEBUG) console.log(`[YT Handle Enhancer] Fetching RSS feed for: ${channelId}`);
@@ -175,6 +221,7 @@
             const handle = await fetchHandle(channelId);
             if (handle) {
                 channelHandleCache.set(channelId, handle);
+                saveCacheEntry(channelId, handle);
 
                 // Find all messages from the same author (including the current one) and update them
                 const selectors = [

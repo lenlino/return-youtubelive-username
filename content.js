@@ -15,6 +15,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             mode: message.mode
         }, '*');
     }
+
+    if (message.type === 'clearCache') {
+        // Forward the clear cache message to the injected script
+        window.postMessage({ type: 'clearCache' }, '*');
+    }
 });
 
 // Handle requests for current display mode from injected script
@@ -28,6 +33,33 @@ window.addEventListener('message', async (event) => {
             type: 'displayModeChanged',
             mode: result.displayMode
         }, '*');
+    }
+
+    if (event.data.type === 'loadCache') {
+        // Load cache from chrome.storage.local
+        chrome.storage.local.get(['channelCache'], (result) => {
+            window.postMessage({
+                type: 'cacheLoaded',
+                cache: result.channelCache || {}
+            }, '*');
+        });
+    }
+
+    if (event.data.type === 'saveCache') {
+        // Save cache entry to chrome.storage.local
+        const { channelId, title, timestamp } = event.data;
+        chrome.storage.local.get(['channelCache'], (result) => {
+            const cache = result.channelCache || {};
+            cache[channelId] = { title, timestamp };
+            chrome.storage.local.set({ channelCache: cache });
+        });
+    }
+
+    if (event.data.type === 'clearCache') {
+        // Clear all cache
+        chrome.storage.local.remove(['channelCache'], () => {
+            window.postMessage({ type: 'cacheCleared' }, '*');
+        });
     }
 
     if (event.data.type === 'fetchRSS') {

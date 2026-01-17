@@ -26,5 +26,13 @@
   "settingsSaved": {
     "message": "Settings saved",
     "description": "Status message when settings are saved"
+  },
+  "clearCache": {
+    "message": "Clear Cache",
+    "description": "Button to clear cache"
+  },
+  "cacheCleared": {
+    "message": "Cache cleared",
+    "description": "Status message when cache is cleared"
   }
 }

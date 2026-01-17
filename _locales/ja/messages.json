@@ -26,5 +26,13 @@
   "settingsSaved": {
     "message": "設定を保存しました",
     "description": "設定が保存されたときのステータスメッセージ"
+  },
+  "clearCache": {
+    "message": "キャッシュをクリア",
+    "description": "キャッシュをクリアするボタン"
+  },
+  "cacheCleared": {
+    "message": "キャッシュをクリアしました",
+    "description": "キャッシュがクリアされたときのステータスメッセージ"
   }
 }

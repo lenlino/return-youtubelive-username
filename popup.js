@@ -47,4 +47,27 @@ document.addEventListener('DOMContentLoaded', async () => {
             }, 2000);
         });
     });
+
+    // Handle cache clear button
+    const clearCacheBtn = document.getElementById('clearCache');
+    clearCacheBtn.addEventListener('click', () => {
+        chrome.storage.local.remove(['channelCache'], () => {
+            statusDiv.textContent = chrome.i18n.getMessage('cacheCleared');
+            statusDiv.classList.add('show');
+
+            // Notify all tabs to clear their in-memory cache
+            const youtubeTabs = chrome.tabs.query({ url: 'https://www.youtube.com/*' });
+            const studioTabs = chrome.tabs.query({ url: 'https://studio.youtube.com/*' });
+            Promise.all([youtubeTabs, studioTabs]).then(([yt, st]) => {
+                const allTabs = [...yt, ...st];
+                allTabs.forEach(tab => {
+                    chrome.tabs.sendMessage(tab.id, { type: 'clearCache' }).catch(() => {});
+                });
+            });
+
+            setTimeout(() => {
+                statusDiv.classList.remove('show');
+            }, 2000);
+        });
+    });
 });
