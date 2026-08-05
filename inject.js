@@ -8,6 +8,21 @@
     let displayMode = 'both'; // 'both', 'name', 'handle'
     const CACHE_DURATION = 7 * 24 * 60 * 60 * 1000; // 1 week in milliseconds
 
+    const MESSAGE_SELECTORS = [
+        'yt-live-chat-text-message-renderer',
+        'yt-live-chat-paid-message-renderer',
+        'yt-live-chat-membership-item-renderer',
+        'yt-live-chat-paid-sticker-renderer'
+    ];
+
+    let filterMode = 'all';
+    let allowList = {};
+    let blockList = {};
+    let broadcasterId = null;
+    let conversionEnabled = false;
+    let observing = false;
+    let resourcesLoaded = false;
+
     // Listen for display mode changes and cache clear
     window.addEventListener('message', (event) => {
         if (event.source !== window) return;
@@ -30,13 +45,10 @@
             if (DEBUG) console.log(`[YT Handle Enhancer] Loaded ${nicknameCache.size} nicknames`);
             updateAllMessages();
         }
+        if (event.data.type === 'filterSettingsChanged') {
+            requestFilterSettings().then(applyFilter);
+        }
     });
-
-    // Load initial display mode from storage
-    window.postMessage({ type: 'getDisplayMode' }, '*');
-
-    // Load nicknames from storage
-    window.postMessage({ type: 'loadNicknames' }, '*');
 
     // Load cache from chrome.storage.local
     const loadCache = async () => {
@@ -76,8 +88,84 @@
         }, '*');
     };
 
-    // Initialize cache
-    loadCache();
+    // Load filter settings from chrome.storage.local
+    const requestFilterSettings = () => {
+        return new Promise((resolve) => {
+            const handler = (event) => {
+                if (event.source !== window) return;
+                if (event.data.type === 'filterSettingsLoaded') {
+                    window.removeEventListener('message', handler);
+                    filterMode = event.data.filterMode || 'all';
+                    allowList = event.data.allowList || {};
+                    blockList = event.data.blockList || {};
+                    resolve();
+                }
+            };
+            window.addEventListener('message', handler);
+            window.postMessage({ type: 'getFilterSettings' }, '*');
+            setTimeout(() => {
+                window.removeEventListener('message', handler);
+                resolve();
+            }, 1000);
+        });
+    };
+
+    const getVideoId = () => {
+        const own = new URLSearchParams(window.location.search).get('v');
+        if (own) return own;
+
+        if (!document.referrer) return null;
+        try {
+            const ref = new URL(document.referrer);
+            const v = ref.searchParams.get('v');
+            if (v) return v;
+            const studio = ref.pathname.match(/\/video\/([^/]+)\//);
+            if (studio) return studio[1];
+        } catch {
+            return null;
+        }
+        return null;
+    };
+
+    const resolveBroadcaster = async () => {
+        // Same-origin parent frame holds the player data on a normal watch page
+        try {
+            const host = window.parent !== window ? window.parent : window;
+            const details = host.ytInitialPlayerResponse?.videoDetails;
+            if (details?.channelId) {
+                return { channelId: details.channelId, title: details.author || '' };
+            }
+        } catch {
+            // Cross-origin or not available; fall through
+        }
+
+        const videoId = getVideoId();
+        if (!videoId) return null;
+
+        return new Promise((resolve) => {
+            const messageId = `owner_${videoId}_${Date.now()}`;
+            const handler = (event) => {
+                if (event.source !== window) return;
+                if (event.data.type === 'videoOwnerResolved' && event.data.messageId === messageId) {
+                    window.removeEventListener('message', handler);
+                    resolve(event.data.success
+                        ? { channelId: event.data.channelId, title: event.data.title || '' }
+                        : null);
+                }
+            };
+            window.addEventListener('message', handler);
+            window.postMessage({
+                type: 'resolveVideoOwner',
+                videoId: videoId,
+                messageId: messageId
+            }, '*');
+
+            setTimeout(() => {
+                window.removeEventListener('message', handler);
+                resolve(null);
+            }, 5000);
+        });
+    };
 
     const fetchHandle = async (channelId) => {
         if (DEBUG) console.log(`[YT Handle Enhancer] Fetching RSS feed for: ${channelId}`);
@@ -182,14 +270,7 @@
     };
 
     const updateAllMessages = () => {
-        const messageSelectors = [
-            'yt-live-chat-text-message-renderer',
-            'yt-live-chat-paid-message-renderer',
-            'yt-live-chat-membership-item-renderer',
-            'yt-live-chat-paid-sticker-renderer'
-        ];
-
-        messageSelectors.forEach(selector => {
+        MESSAGE_SELECTORS.forEach(selector => {
             document.querySelectorAll(selector).forEach(node => {
                 const authorChip = node.querySelector('yt-live-chat-author-chip');
                 if (authorChip && authorChip.dataset.originalName) {
@@ -198,6 +279,21 @@
                     const channelId = authorChip.dataset.channelId;
                     updateAuthorName(authorChip, authorName, handle, channelId);
                 }
+            });
+        });
+    };
+
+    const restoreAllMessages = () => {
+        MESSAGE_SELECTORS.forEach(selector => {
+            document.querySelectorAll(selector).forEach(node => {
+                const authorChip = node.querySelector('yt-live-chat-author-chip');
+                if (!authorChip || !authorChip.dataset.originalName) return;
+
+                const authorNameElement = authorChip.querySelector('#author-name');
+                if (authorNameElement) {
+                    authorNameElement.textContent = authorChip.dataset.originalName;
+                }
+                delete authorChip.dataset.handleModified;
             });
         });
     };
@@ -251,14 +347,7 @@
                 saveCacheEntry(channelId, handle);
 
                 // Find all messages from the same author (including the current one) and update them
-                const selectors = [
-                    'yt-live-chat-text-message-renderer',
-                    'yt-live-chat-paid-message-renderer',
-                    'yt-live-chat-membership-item-renderer',
-                    'yt-live-chat-paid-sticker-renderer'
-                ];
-
-                selectors.forEach(selector => {
+                MESSAGE_SELECTORS.forEach(selector => {
                     document.querySelectorAll(selector).forEach(n => {
                         const d = n.__data || n.data;
                         if (d && d.authorExternalChannelId === channelId) {
@@ -274,19 +363,12 @@
     };
 
     const observer = new MutationObserver((mutations) => {
-        const messageSelectors = [
-            'yt-live-chat-text-message-renderer',
-            'yt-live-chat-paid-message-renderer',
-            'yt-live-chat-membership-item-renderer',
-            'yt-live-chat-paid-sticker-renderer'
-        ];
-
         for (const mutation of mutations) {
             for (const node of mutation.addedNodes) {
                 if (node.nodeType !== 1) continue;
 
                 // Check if the node itself matches any of the message types
-                for (const selector of messageSelectors) {
+                for (const selector of MESSAGE_SELECTORS) {
                     if (node.matches(selector)) {
                         processMessageNode(node);
                         break;
@@ -294,7 +376,7 @@
                 }
 
                 // Check for message nodes within the added node
-                messageSelectors.forEach(selector => {
+                MESSAGE_SELECTORS.forEach(selector => {
                     node.querySelectorAll(selector).forEach(processMessageNode);
                 });
             }
@@ -306,13 +388,7 @@
         if (chat) {
             if (DEBUG) console.log('[YT Handle Enhancer] Chat app found. Starting observer.');
             // Process existing messages first (all types)
-            const messageSelectors = [
-                'yt-live-chat-text-message-renderer',
-                'yt-live-chat-paid-message-renderer',
-                'yt-live-chat-membership-item-renderer',
-                'yt-live-chat-paid-sticker-renderer'
-            ];
-            messageSelectors.forEach(selector => {
+            MESSAGE_SELECTORS.forEach(selector => {
                 chat.querySelectorAll(selector).forEach(processMessageNode);
             });
             // Then observe for new ones
@@ -329,10 +405,72 @@
         }
     });
 
-    // Initial check, in case the chat is already there
-    if (!findChatAndStart()) {
-        if (DEBUG) console.log('[YT Handle Enhancer] Waiting for chat app...');
-        // If not, wait for it to be added to the DOM
-        bodyObserver.observe(document.body, { childList: true, subtree: true });
-    }
+    const shouldConvert = () => {
+        switch (filterMode) {
+            case 'allow':
+                return !!broadcasterId && !!allowList[broadcasterId];
+            case 'block':
+                return !broadcasterId || !blockList[broadcasterId];
+            case 'all':
+            default:
+                return true;
+        }
+    };
+
+    const startWatching = () => {
+        if (observing) return;
+        observing = true;
+        if (!findChatAndStart()) {
+            if (DEBUG) console.log('[YT Handle Enhancer] Waiting for chat app...');
+            bodyObserver.observe(document.body, { childList: true, subtree: true });
+        }
+    };
+
+    const stopWatching = () => {
+        observer.disconnect();
+        bodyObserver.disconnect();
+        observing = false;
+        restoreAllMessages();
+    };
+
+    const applyFilter = async () => {
+        const enabled = shouldConvert();
+        if (enabled === conversionEnabled) return;
+        conversionEnabled = enabled;
+
+        if (!enabled) {
+            if (DEBUG) console.log('[YT Handle Enhancer] Conversion disabled for this broadcaster');
+            stopWatching();
+            return;
+        }
+
+        if (!resourcesLoaded) {
+            resourcesLoaded = true;
+            window.postMessage({ type: 'getDisplayMode' }, '*');
+            window.postMessage({ type: 'loadNicknames' }, '*');
+            await loadCache();
+        }
+        startWatching();
+    };
+
+    const init = async () => {
+        await requestFilterSettings();
+
+        const broadcaster = await resolveBroadcaster();
+        if (broadcaster) {
+            broadcasterId = broadcaster.channelId;
+            window.postMessage({
+                type: 'broadcasterDetected',
+                channelId: broadcaster.channelId,
+                title: broadcaster.title
+            }, '*');
+            if (DEBUG) console.log(`[YT Handle Enhancer] Broadcaster: ${broadcaster.title} (${broadcaster.channelId})`);
+        } else if (DEBUG) {
+            console.log('[YT Handle Enhancer] Broadcaster could not be resolved');
+        }
+
+        await applyFilter();
+    };
+
+    init();
 })();
