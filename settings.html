@@ -14,6 +14,7 @@
 
         <div class="tabs">
             <button class="tab-button active" data-tab="nickname" data-i18n="nicknameTab">Nicknames</button>
+            <button class="tab-button" data-tab="target" data-i18n="targetChannelsTab">Target Channels</button>
             <button class="tab-button" data-tab="cache" data-i18n="cacheTab">Cache</button>
         </div>
 
@@ -23,6 +24,28 @@
                 <input type="text" id="nicknameSearch" placeholder="Search by channel name..." data-i18n-placeholder="searchPlaceholder">
             </div>
             <div class="nickname-list" id="nicknameList"></div>
+        </div>
+
+        <div class="tab-content" id="target-tab">
+            <h2 data-i18n="filterSectionTitle">Conversion Target</h2>
+            <div class="settings">
+                <label class="radio-option">
+                    <input type="radio" name="filterMode" value="all" checked>
+                    <span data-i18n="filterModeAll">Convert on all streams</span>
+                </label>
+                <label class="radio-option">
+                    <input type="radio" name="filterMode" value="allow">
+                    <span data-i18n="filterModeAllow">Only streams in the allow list</span>
+                </label>
+                <label class="radio-option">
+                    <input type="radio" name="filterMode" value="block">
+                    <span data-i18n="filterModeBlock">All streams except the block list</span>
+                </label>
+            </div>
+            <h2 data-i18n="allowListTitle">Allow List</h2>
+            <div class="channel-list" id="allowListView"></div>
+            <h2 class="list-heading" data-i18n="blockListTitle">Block List</h2>
+            <div class="channel-list" id="blockListView"></div>
         </div>
 
         <div class="tab-content" id="cache-tab">

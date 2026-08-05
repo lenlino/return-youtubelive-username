@@ -133,6 +133,80 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Initial render
     renderNicknameList();
 
+    // Conversion target management
+    const FILTER_DEFAULTS = { filterMode: 'all', allowList: {}, blockList: {} };
+    const filterRadios = document.querySelectorAll('input[name="filterMode"]');
+    const allowListView = document.getElementById('allowListView');
+    const blockListView = document.getElementById('blockListView');
+
+    const notifyFilterChanged = async () => {
+        const youtubeTabs = await chrome.tabs.query({ url: 'https://www.youtube.com/*' });
+        const studioTabs = await chrome.tabs.query({ url: 'https://studio.youtube.com/*' });
+        [...youtubeTabs, ...studioTabs].forEach(tab => {
+            chrome.tabs.sendMessage(tab.id, { type: 'filterSettingsChanged' }).catch(() => {});
+        });
+    };
+
+    const renderChannelList = (container, list, storageKey) => {
+        container.textContent = '';
+
+        const entries = Object.entries(list);
+        if (entries.length === 0) {
+            const empty = document.createElement('p');
+            empty.textContent = chrome.i18n.getMessage('listEmpty');
+            container.appendChild(empty);
+            return;
+        }
+
+        entries.sort((a, b) => a[1].localeCompare(b[1]));
+
+        entries.forEach(([channelId, name]) => {
+            const item = document.createElement('div');
+            item.className = 'channel-item';
+
+            const info = document.createElement('div');
+            info.className = 'channel-info';
+
+            const nameElement = document.createElement('div');
+            nameElement.className = 'channel-name';
+            nameElement.textContent = name;
+            info.appendChild(nameElement);
+
+            const removeButton = document.createElement('button');
+            removeButton.textContent = chrome.i18n.getMessage('removeNickname');
+            removeButton.addEventListener('click', async () => {
+                const stored = await chrome.storage.local.get({ [storageKey]: {} });
+                const target = stored[storageKey];
+                delete target[channelId];
+                await chrome.storage.local.set({ [storageKey]: target });
+                await notifyFilterChanged();
+                await renderTargetTab();
+            });
+
+            item.appendChild(info);
+            item.appendChild(removeButton);
+            container.appendChild(item);
+        });
+    };
+
+    const renderTargetTab = async () => {
+        const stored = await chrome.storage.local.get(FILTER_DEFAULTS);
+        filterRadios.forEach(radio => {
+            radio.checked = radio.value === stored.filterMode;
+        });
+        renderChannelList(allowListView, stored.allowList, 'allowList');
+        renderChannelList(blockListView, stored.blockList, 'blockList');
+    };
+
+    filterRadios.forEach(radio => {
+        radio.addEventListener('change', async (e) => {
+            await chrome.storage.local.set({ filterMode: e.target.value });
+            await notifyFilterChanged();
+        });
+    });
+
+    renderTargetTab();
+
     // Cache management
     const clearCacheBtn = document.getElementById('clearCache');
     const cacheStatus = document.getElementById('cacheStatus');
