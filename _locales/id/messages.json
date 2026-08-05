@@ -27,6 +27,62 @@
     "message": "Pengaturan disimpan",
     "description": "Pesan status saat pengaturan disimpan"
   },
+  "clearCache": {
+    "message": "Hapus cache",
+    "description": "Tombol untuk menghapus cache"
+  },
+  "cacheCleared": {
+    "message": "Cache dihapus",
+    "description": "Pesan status saat cache dihapus"
+  },
+  "nicknameTitle": {
+    "message": "Pengaturan nama panggilan",
+    "description": "Judul pengaturan nama panggilan"
+  },
+  "manageNicknames": {
+    "message": "Kelola nama panggilan",
+    "description": "Tombol untuk mengelola nama panggilan"
+  },
+  "searchPlaceholder": {
+    "message": "Cari berdasarkan nama kanal...",
+    "description": "Placeholder kotak pencarian"
+  },
+  "nicknamePlaceholder": {
+    "message": "Atur nama panggilan...",
+    "description": "Placeholder input nama panggilan"
+  },
+  "removeNickname": {
+    "message": "Hapus",
+    "description": "Tombol untuk menghapus nama panggilan"
+  },
+  "openSettings": {
+    "message": "Buka pengaturan",
+    "description": "Tombol untuk membuka halaman pengaturan"
+  },
+  "settingsPageTitle": {
+    "message": "Pengaturan",
+    "description": "Judul halaman pengaturan"
+  },
+  "displayTab": {
+    "message": "Tampilan",
+    "description": "Tab tampilan"
+  },
+  "nicknameTab": {
+    "message": "Nama panggilan",
+    "description": "Tab nama panggilan"
+  },
+  "cacheTab": {
+    "message": "Cache",
+    "description": "Tab cache"
+  },
+  "cacheTitle": {
+    "message": "Pengaturan cache",
+    "description": "Judul pengaturan cache"
+  },
+  "cacheDescription": {
+    "message": "Nama kanal yang di-cache disimpan selama 1 minggu untuk mengurangi permintaan ke server.",
+    "description": "Deskripsi cache"
+  },
   "filterSectionTitle": {
     "message": "Target konversi",
     "description": "Judul bagian target konversi"

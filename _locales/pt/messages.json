@@ -27,6 +27,62 @@
     "message": "Configurações salvas",
     "description": "Mensagem de status quando as configurações são salvas"
   },
+  "clearCache": {
+    "message": "Limpar cache",
+    "description": "Botão para limpar o cache"
+  },
+  "cacheCleared": {
+    "message": "Cache limpo",
+    "description": "Mensagem de status quando o cache é limpo"
+  },
+  "nicknameTitle": {
+    "message": "Configurações de apelidos",
+    "description": "Título das configurações de apelidos"
+  },
+  "manageNicknames": {
+    "message": "Gerenciar apelidos",
+    "description": "Botão para gerenciar apelidos"
+  },
+  "searchPlaceholder": {
+    "message": "Pesquisar por nome do canal...",
+    "description": "Espaço reservado da caixa de pesquisa"
+  },
+  "nicknamePlaceholder": {
+    "message": "Definir apelido...",
+    "description": "Espaço reservado do campo de apelido"
+  },
+  "removeNickname": {
+    "message": "Remover",
+    "description": "Botão para remover o apelido"
+  },
+  "openSettings": {
+    "message": "Abrir configurações",
+    "description": "Botão para abrir a página de configurações"
+  },
+  "settingsPageTitle": {
+    "message": "Configurações",
+    "description": "Título da página de configurações"
+  },
+  "displayTab": {
+    "message": "Exibição",
+    "description": "Aba de exibição"
+  },
+  "nicknameTab": {
+    "message": "Apelidos",
+    "description": "Aba de apelidos"
+  },
+  "cacheTab": {
+    "message": "Cache",
+    "description": "Aba de cache"
+  },
+  "cacheTitle": {
+    "message": "Configurações de cache",
+    "description": "Título das configurações de cache"
+  },
+  "cacheDescription": {
+    "message": "Os nomes de canal em cache são armazenados por 1 semana para reduzir as solicitações ao servidor.",
+    "description": "Descrição do cache"
+  },
   "filterSectionTitle": {
     "message": "Alvo da conversão",
     "description": "Título da seção de alvo da conversão"

@@ -27,6 +27,62 @@
     "message": "सेटिंग्स सहेजी गईं",
     "description": "सेटिंग्स सहेजे जाने पर स्थिति संदेश"
   },
+  "clearCache": {
+    "message": "कैश साफ़ करें",
+    "description": "कैश साफ़ करने का बटन"
+  },
+  "cacheCleared": {
+    "message": "कैश साफ़ हो गया",
+    "description": "कैश साफ़ होने पर स्थिति संदेश"
+  },
+  "nicknameTitle": {
+    "message": "उपनाम सेटिंग्स",
+    "description": "उपनाम सेटिंग्स का शीर्षक"
+  },
+  "manageNicknames": {
+    "message": "उपनाम प्रबंधित करें",
+    "description": "उपनाम प्रबंधित करने का बटन"
+  },
+  "searchPlaceholder": {
+    "message": "चैनल नाम से खोजें...",
+    "description": "खोज बॉक्स का प्लेसहोल्डर"
+  },
+  "nicknamePlaceholder": {
+    "message": "उपनाम सेट करें...",
+    "description": "उपनाम इनपुट का प्लेसहोल्डर"
+  },
+  "removeNickname": {
+    "message": "हटाएं",
+    "description": "उपनाम हटाने का बटन"
+  },
+  "openSettings": {
+    "message": "सेटिंग्स खोलें",
+    "description": "सेटिंग्स पेज खोलने का बटन"
+  },
+  "settingsPageTitle": {
+    "message": "सेटिंग्स",
+    "description": "सेटिंग्स पेज का शीर्षक"
+  },
+  "displayTab": {
+    "message": "प्रदर्शन",
+    "description": "प्रदर्शन टैब"
+  },
+  "nicknameTab": {
+    "message": "उपनाम",
+    "description": "उपनाम टैब"
+  },
+  "cacheTab": {
+    "message": "कैश",
+    "description": "कैश टैब"
+  },
+  "cacheTitle": {
+    "message": "कैश सेटिंग्स",
+    "description": "कैश सेटिंग्स का शीर्षक"
+  },
+  "cacheDescription": {
+    "message": "सर्वर अनुरोधों को कम करने के लिए कैश किए गए चैनल नाम 1 सप्ताह तक संग्रहीत रहते हैं।",
+    "description": "कैश का विवरण"
+  },
   "filterSectionTitle": {
     "message": "रूपांतरण लक्ष्य",
     "description": "रूपांतरण लक्ष्य अनुभाग का शीर्षक"

@@ -27,6 +27,62 @@
     "message": "Configuración guardada",
     "description": "Mensaje de estado cuando se guarda la configuración"
   },
+  "clearCache": {
+    "message": "Borrar caché",
+    "description": "Botón para borrar la caché"
+  },
+  "cacheCleared": {
+    "message": "Caché borrada",
+    "description": "Mensaje de estado cuando se borra la caché"
+  },
+  "nicknameTitle": {
+    "message": "Configuración de apodos",
+    "description": "Título de la configuración de apodos"
+  },
+  "manageNicknames": {
+    "message": "Administrar apodos",
+    "description": "Botón para administrar apodos"
+  },
+  "searchPlaceholder": {
+    "message": "Buscar por nombre de canal...",
+    "description": "Marcador de posición del cuadro de búsqueda"
+  },
+  "nicknamePlaceholder": {
+    "message": "Establecer apodo...",
+    "description": "Marcador de posición del campo de apodo"
+  },
+  "removeNickname": {
+    "message": "Quitar",
+    "description": "Botón para quitar el apodo"
+  },
+  "openSettings": {
+    "message": "Abrir configuración",
+    "description": "Botón para abrir la página de configuración"
+  },
+  "settingsPageTitle": {
+    "message": "Configuración",
+    "description": "Título de la página de configuración"
+  },
+  "displayTab": {
+    "message": "Visualización",
+    "description": "Pestaña de visualización"
+  },
+  "nicknameTab": {
+    "message": "Apodos",
+    "description": "Pestaña de apodos"
+  },
+  "cacheTab": {
+    "message": "Caché",
+    "description": "Pestaña de caché"
+  },
+  "cacheTitle": {
+    "message": "Configuración de caché",
+    "description": "Título de la configuración de caché"
+  },
+  "cacheDescription": {
+    "message": "Los nombres de canal en caché se guardan durante 1 semana para reducir las solicitudes al servidor.",
+    "description": "Descripción de la caché"
+  },
   "filterSectionTitle": {
     "message": "Objetivo de conversión",
     "description": "Título de la sección de objetivo de conversión"
