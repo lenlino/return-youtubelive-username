@@ -20,8 +20,8 @@
     "description": "Opção para exibir apenas o nome de usuário"
   },
   "displayModeHandleOnly": {
-    "message": "Apenas identificador",
-    "description": "Opção para exibir apenas o identificador"
+    "message": "Apenas identificador (padrão do YouTube)",
+    "description": "Opção para manter a exibição padrão do YouTube sem alterações"
   },
   "settingsSaved": {
     "message": "Configurações salvas",

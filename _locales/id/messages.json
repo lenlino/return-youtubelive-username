@@ -20,8 +20,8 @@
     "description": "Opsi untuk menampilkan hanya nama pengguna"
   },
   "displayModeHandleOnly": {
-    "message": "Hanya handle",
-    "description": "Opsi untuk menampilkan hanya handle"
+    "message": "Hanya handle (bawaan YouTube)",
+    "description": "Opsi untuk membiarkan tampilan bawaan YouTube tanpa perubahan"
   },
   "settingsSaved": {
     "message": "Pengaturan disimpan",

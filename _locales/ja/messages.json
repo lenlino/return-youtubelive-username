@@ -20,8 +20,8 @@
     "description": "ユーザー名のみを表示するオプション"
   },
   "displayModeHandleOnly": {
-    "message": "ハンドルのみ",
-    "description": "ハンドルのみを表示するオプション"
+    "message": "ハンドルのみ（YouTube標準）",
+    "description": "変換せずYouTube標準のハンドル表示のままにするオプション"
   },
   "settingsSaved": {
     "message": "設定を保存しました",

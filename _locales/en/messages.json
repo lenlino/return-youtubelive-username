@@ -20,8 +20,8 @@
     "description": "Option to display username only"
   },
   "displayModeHandleOnly": {
-    "message": "Handle Only",
-    "description": "Option to display handle only"
+    "message": "Handle Only (YouTube default)",
+    "description": "Option to leave the YouTube default handle display unchanged"
   },
   "settingsSaved": {
     "message": "Settings saved",

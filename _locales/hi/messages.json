@@ -20,8 +20,8 @@
     "description": "केवल उपयोगकर्ता नाम प्रदर्शित करने का विकल्प"
   },
   "displayModeHandleOnly": {
-    "message": "केवल हैंडल",
-    "description": "केवल हैंडल प्रदर्शित करने का विकल्प"
+    "message": "केवल हैंडल (YouTube डिफ़ॉल्ट)",
+    "description": "YouTube के डिफ़ॉल्ट हैंडल प्रदर्शन को अपरिवर्तित रखने का विकल्प"
   },
   "settingsSaved": {
     "message": "सेटिंग्स सहेजी गईं",
