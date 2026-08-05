@@ -26,5 +26,53 @@
   "settingsSaved": {
     "message": "Pengaturan disimpan",
     "description": "Pesan status saat pengaturan disimpan"
+  },
+  "filterSectionTitle": {
+    "message": "Target konversi",
+    "description": "Judul bagian target konversi"
+  },
+  "filterModeAll": {
+    "message": "Konversi di semua siaran",
+    "description": "Mode yang mengonversi di semua siaran"
+  },
+  "filterModeAllow": {
+    "message": "Hanya siaran dalam daftar izin",
+    "description": "Mode yang mengonversi hanya pada siaran dalam daftar izin"
+  },
+  "filterModeBlock": {
+    "message": "Semua kecuali daftar blokir",
+    "description": "Mode yang mengonversi kecuali pada siaran dalam daftar blokir"
+  },
+  "currentBroadcaster": {
+    "message": "Penyiar saat ini",
+    "description": "Label penyiar dari siaran yang sedang ditonton"
+  },
+  "broadcasterNotDetected": {
+    "message": "Tidak ada siaran terdeteksi",
+    "description": "Pesan saat penyiar tidak dapat diidentifikasi"
+  },
+  "addToList": {
+    "message": "Tambahkan kanal ini",
+    "description": "Tombol untuk menambahkan penyiar saat ini ke daftar"
+  },
+  "removeFromList": {
+    "message": "Hapus kanal ini",
+    "description": "Tombol untuk menghapus penyiar saat ini dari daftar"
+  },
+  "allowListTitle": {
+    "message": "Daftar izin",
+    "description": "Judul daftar izin"
+  },
+  "blockListTitle": {
+    "message": "Daftar blokir",
+    "description": "Judul daftar blokir"
+  },
+  "listEmpty": {
+    "message": "Belum ada kanal terdaftar",
+    "description": "Pesan saat daftar kosong"
+  },
+  "targetChannelsTab": {
+    "message": "Kanal target",
+    "description": "Tab kanal target"
   }
 }

@@ -82,5 +82,53 @@
   "cacheDescription": {
     "message": "Cached channel names are stored for 1 week to reduce server requests.",
     "description": "Cache description"
+  },
+  "filterSectionTitle": {
+    "message": "Conversion Target",
+    "description": "Title of the conversion target section"
+  },
+  "filterModeAll": {
+    "message": "Convert on all streams",
+    "description": "Mode that converts on every stream"
+  },
+  "filterModeAllow": {
+    "message": "Only streams in the allow list",
+    "description": "Mode that converts only on streams in the allow list"
+  },
+  "filterModeBlock": {
+    "message": "All streams except the block list",
+    "description": "Mode that converts except on streams in the block list"
+  },
+  "currentBroadcaster": {
+    "message": "Current broadcaster",
+    "description": "Label for the broadcaster of the stream being watched"
+  },
+  "broadcasterNotDetected": {
+    "message": "No stream detected",
+    "description": "Message shown when the broadcaster could not be identified"
+  },
+  "addToList": {
+    "message": "Add this channel",
+    "description": "Button to add the current broadcaster to the list"
+  },
+  "removeFromList": {
+    "message": "Remove this channel",
+    "description": "Button to remove the current broadcaster from the list"
+  },
+  "allowListTitle": {
+    "message": "Allow List",
+    "description": "Title of the allow list"
+  },
+  "blockListTitle": {
+    "message": "Block List",
+    "description": "Title of the block list"
+  },
+  "listEmpty": {
+    "message": "No channels registered",
+    "description": "Message shown when the list is empty"
+  },
+  "targetChannelsTab": {
+    "message": "Target Channels",
+    "description": "Target channels tab"
   }
 }

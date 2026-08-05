@@ -82,5 +82,53 @@
   "cacheDescription": {
     "message": "チャンネル名のキャッシュは1週間保存され、サーバーへのリクエストを削減します。",
     "description": "キャッシュの説明"
+  },
+  "filterSectionTitle": {
+    "message": "変換対象",
+    "description": "変換対象セクションのタイトル"
+  },
+  "filterModeAll": {
+    "message": "全配信で変換",
+    "description": "すべての配信で変換するモード"
+  },
+  "filterModeAllow": {
+    "message": "許可リストの配信のみ",
+    "description": "許可リストに登録した配信でのみ変換するモード"
+  },
+  "filterModeBlock": {
+    "message": "除外リスト以外で変換",
+    "description": "除外リストに登録した配信以外で変換するモード"
+  },
+  "currentBroadcaster": {
+    "message": "現在の配信者",
+    "description": "現在視聴中の配信者のラベル"
+  },
+  "broadcasterNotDetected": {
+    "message": "配信を検出できません",
+    "description": "配信者を特定できなかったときのメッセージ"
+  },
+  "addToList": {
+    "message": "このチャンネルを追加",
+    "description": "現在の配信者をリストに追加するボタン"
+  },
+  "removeFromList": {
+    "message": "このチャンネルを解除",
+    "description": "現在の配信者をリストから削除するボタン"
+  },
+  "allowListTitle": {
+    "message": "許可リスト",
+    "description": "許可リスト一覧のタイトル"
+  },
+  "blockListTitle": {
+    "message": "除外リスト",
+    "description": "除外リスト一覧のタイトル"
+  },
+  "listEmpty": {
+    "message": "登録されているチャンネルはありません",
+    "description": "リストが空のときのメッセージ"
+  },
+  "targetChannelsTab": {
+    "message": "対象配信者",
+    "description": "対象配信者タブ"
   }
 }

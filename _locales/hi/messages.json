@@ -26,5 +26,53 @@
   "settingsSaved": {
     "message": "सेटिंग्स सहेजी गईं",
     "description": "सेटिंग्स सहेजे जाने पर स्थिति संदेश"
+  },
+  "filterSectionTitle": {
+    "message": "रूपांतरण लक्ष्य",
+    "description": "रूपांतरण लक्ष्य अनुभाग का शीर्षक"
+  },
+  "filterModeAll": {
+    "message": "सभी लाइव स्ट्रीम पर रूपांतरित करें",
+    "description": "सभी लाइव स्ट्रीम पर रूपांतरित करने वाला मोड"
+  },
+  "filterModeAllow": {
+    "message": "केवल अनुमति सूची की लाइव स्ट्रीम",
+    "description": "केवल अनुमति सूची की लाइव स्ट्रीम पर रूपांतरित करने वाला मोड"
+  },
+  "filterModeBlock": {
+    "message": "अवरोध सूची को छोड़कर सभी",
+    "description": "अवरोध सूची की लाइव स्ट्रीम को छोड़कर रूपांतरित करने वाला मोड"
+  },
+  "currentBroadcaster": {
+    "message": "वर्तमान प्रसारक",
+    "description": "देखी जा रही लाइव स्ट्रीम के प्रसारक का लेबल"
+  },
+  "broadcasterNotDetected": {
+    "message": "कोई लाइव स्ट्रीम नहीं मिली",
+    "description": "प्रसारक की पहचान न हो पाने पर संदेश"
+  },
+  "addToList": {
+    "message": "यह चैनल जोड़ें",
+    "description": "वर्तमान प्रसारक को सूची में जोड़ने का बटन"
+  },
+  "removeFromList": {
+    "message": "यह चैनल हटाएं",
+    "description": "वर्तमान प्रसारक को सूची से हटाने का बटन"
+  },
+  "allowListTitle": {
+    "message": "अनुमति सूची",
+    "description": "अनुमति सूची का शीर्षक"
+  },
+  "blockListTitle": {
+    "message": "अवरोध सूची",
+    "description": "अवरोध सूची का शीर्षक"
+  },
+  "listEmpty": {
+    "message": "कोई चैनल पंजीकृत नहीं है",
+    "description": "सूची खाली होने पर संदेश"
+  },
+  "targetChannelsTab": {
+    "message": "लक्षित चैनल",
+    "description": "लक्षित चैनल टैब"
   }
 }

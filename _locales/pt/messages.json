@@ -26,5 +26,53 @@
   "settingsSaved": {
     "message": "Configurações salvas",
     "description": "Mensagem de status quando as configurações são salvas"
+  },
+  "filterSectionTitle": {
+    "message": "Alvo da conversão",
+    "description": "Título da seção de alvo da conversão"
+  },
+  "filterModeAll": {
+    "message": "Converter em todas as transmissões",
+    "description": "Modo que converte em todas as transmissões"
+  },
+  "filterModeAllow": {
+    "message": "Apenas transmissões da lista de permissões",
+    "description": "Modo que converte apenas nas transmissões da lista de permissões"
+  },
+  "filterModeBlock": {
+    "message": "Todas exceto a lista de bloqueio",
+    "description": "Modo que converte exceto nas transmissões da lista de bloqueio"
+  },
+  "currentBroadcaster": {
+    "message": "Transmissor atual",
+    "description": "Rótulo do transmissor da transmissão sendo assistida"
+  },
+  "broadcasterNotDetected": {
+    "message": "Nenhuma transmissão detectada",
+    "description": "Mensagem quando o transmissor não pôde ser identificado"
+  },
+  "addToList": {
+    "message": "Adicionar este canal",
+    "description": "Botão para adicionar o transmissor atual à lista"
+  },
+  "removeFromList": {
+    "message": "Remover este canal",
+    "description": "Botão para remover o transmissor atual da lista"
+  },
+  "allowListTitle": {
+    "message": "Lista de permissões",
+    "description": "Título da lista de permissões"
+  },
+  "blockListTitle": {
+    "message": "Lista de bloqueio",
+    "description": "Título da lista de bloqueio"
+  },
+  "listEmpty": {
+    "message": "Nenhum canal registrado",
+    "description": "Mensagem quando a lista está vazia"
+  },
+  "targetChannelsTab": {
+    "message": "Canais alvo",
+    "description": "Aba de canais alvo"
   }
 }

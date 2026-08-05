@@ -26,5 +26,53 @@
   "settingsSaved": {
     "message": "Configuración guardada",
     "description": "Mensaje de estado cuando se guarda la configuración"
+  },
+  "filterSectionTitle": {
+    "message": "Objetivo de conversión",
+    "description": "Título de la sección de objetivo de conversión"
+  },
+  "filterModeAll": {
+    "message": "Convertir en todas las transmisiones",
+    "description": "Modo que convierte en todas las transmisiones"
+  },
+  "filterModeAllow": {
+    "message": "Solo transmisiones de la lista de permitidos",
+    "description": "Modo que convierte solo en las transmisiones de la lista de permitidos"
+  },
+  "filterModeBlock": {
+    "message": "Todas excepto la lista de excluidos",
+    "description": "Modo que convierte excepto en las transmisiones de la lista de excluidos"
+  },
+  "currentBroadcaster": {
+    "message": "Transmisor actual",
+    "description": "Etiqueta del transmisor de la transmisión que se está viendo"
+  },
+  "broadcasterNotDetected": {
+    "message": "No se detectó ninguna transmisión",
+    "description": "Mensaje cuando no se pudo identificar al transmisor"
+  },
+  "addToList": {
+    "message": "Agregar este canal",
+    "description": "Botón para agregar el transmisor actual a la lista"
+  },
+  "removeFromList": {
+    "message": "Quitar este canal",
+    "description": "Botón para quitar el transmisor actual de la lista"
+  },
+  "allowListTitle": {
+    "message": "Lista de permitidos",
+    "description": "Título de la lista de permitidos"
+  },
+  "blockListTitle": {
+    "message": "Lista de excluidos",
+    "description": "Título de la lista de excluidos"
+  },
+  "listEmpty": {
+    "message": "No hay canales registrados",
+    "description": "Mensaje cuando la lista está vacía"
+  },
+  "targetChannelsTab": {
+    "message": "Canales objetivo",
+    "description": "Pestaña de canales objetivo"
   }
 }
