@@ -45,6 +45,84 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
 
+    // Conversion target settings
+    const filterRadios = document.querySelectorAll('input[name="filterMode"]');
+    const broadcasterName = document.getElementById('broadcasterName');
+    const toggleBtn = document.getElementById('toggleBroadcaster');
+
+    const FILTER_DEFAULTS = { filterMode: 'all', allowList: {}, blockList: {} };
+
+    let broadcaster = null;
+
+    const notifyFilterChanged = async () => {
+        const youtubeTabs = await chrome.tabs.query({ url: 'https://www.youtube.com/*' });
+        const studioTabs = await chrome.tabs.query({ url: 'https://studio.youtube.com/*' });
+        [...youtubeTabs, ...studioTabs].forEach(tab => {
+            chrome.tabs.sendMessage(tab.id, { type: 'filterSettingsChanged' }).catch(() => {});
+        });
+    };
+
+    const renderBroadcaster = async () => {
+        const stored = await chrome.storage.local.get(FILTER_DEFAULTS);
+
+        if (!broadcaster) {
+            broadcasterName.textContent = chrome.i18n.getMessage('broadcasterNotDetected');
+            toggleBtn.textContent = chrome.i18n.getMessage('addToList');
+            toggleBtn.disabled = true;
+            return;
+        }
+
+        broadcasterName.textContent = broadcaster.title || broadcaster.channelId;
+
+        if (stored.filterMode === 'all') {
+            toggleBtn.textContent = chrome.i18n.getMessage('addToList');
+            toggleBtn.disabled = true;
+            return;
+        }
+
+        const list = stored.filterMode === 'allow' ? stored.allowList : stored.blockList;
+        const registered = list[broadcaster.channelId] !== undefined;
+        toggleBtn.textContent = chrome.i18n.getMessage(registered ? 'removeFromList' : 'addToList');
+        toggleBtn.disabled = false;
+    };
+
+    toggleBtn.addEventListener('click', async () => {
+        if (!broadcaster) return;
+
+        const stored = await chrome.storage.local.get(FILTER_DEFAULTS);
+        if (stored.filterMode === 'all') return;
+
+        const key = stored.filterMode === 'allow' ? 'allowList' : 'blockList';
+        const list = stored[key];
+
+        if (list[broadcaster.channelId] !== undefined) {
+            delete list[broadcaster.channelId];
+        } else {
+            list[broadcaster.channelId] = broadcaster.title || broadcaster.channelId;
+        }
+
+        await chrome.storage.local.set({ [key]: list });
+        await notifyFilterChanged();
+        await renderBroadcaster();
+    });
+
+    const filterStored = await chrome.storage.local.get(FILTER_DEFAULTS);
+    filterRadios.forEach(radio => {
+        radio.checked = radio.value === filterStored.filterMode;
+        radio.addEventListener('change', async (e) => {
+            await chrome.storage.local.set({ filterMode: e.target.value });
+            await notifyFilterChanged();
+            await renderBroadcaster();
+        });
+    });
+
+    const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (activeTab) {
+        const session = await chrome.storage.session.get(['broadcasters']);
+        broadcaster = (session.broadcasters || {})[activeTab.id] || null;
+    }
+    await renderBroadcaster();
+
     // Open settings page
     const openSettingsBtn = document.getElementById('openSettings');
     openSettingsBtn.addEventListener('click', () => {

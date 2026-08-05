@@ -26,6 +26,27 @@
                 <span data-i18n="displayModeHandleOnly">Handle Only</span>
             </label>
         </div>
+        <div class="section-divider"></div>
+        <h2 class="section-title" data-i18n="filterSectionTitle">Conversion Target</h2>
+        <div class="settings">
+            <label class="radio-option">
+                <input type="radio" name="filterMode" value="all" checked>
+                <span data-i18n="filterModeAll">Convert on all streams</span>
+            </label>
+            <label class="radio-option">
+                <input type="radio" name="filterMode" value="allow">
+                <span data-i18n="filterModeAllow">Only streams in the allow list</span>
+            </label>
+            <label class="radio-option">
+                <input type="radio" name="filterMode" value="block">
+                <span data-i18n="filterModeBlock">All streams except the block list</span>
+            </label>
+        </div>
+        <div class="broadcaster">
+            <div class="broadcaster-label" data-i18n="currentBroadcaster">Current broadcaster</div>
+            <div class="broadcaster-name" id="broadcasterName"></div>
+            <button id="toggleBroadcaster"></button>
+        </div>
         <button id="openSettings" data-i18n="openSettings">Open Settings</button>
     </div>
     <script src="popup.js"></script>
