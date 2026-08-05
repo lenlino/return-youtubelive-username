@@ -45,13 +45,19 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                     return;
                 }
 
-                const idMatch = text.match(/"channelId":"(UC[\w-]{22})"/);
+                // Scope the search to videoDetails; channelId appears elsewhere too
+                const detailsIndex = text.indexOf('"videoDetails"');
+                const scope = detailsIndex >= 0
+                    ? text.slice(detailsIndex, detailsIndex + 4000)
+                    : text;
+
+                const idMatch = scope.match(/"channelId":"(UC[\w-]{22})"/);
                 if (!idMatch) {
                     sendResponse({ success: false });
                     return;
                 }
 
-                const nameMatch = text.match(/"author":"((?:[^"\\]|\\.)*)"/);
+                const nameMatch = scope.match(/"author":"((?:[^"\\]|\\.)*)"/);
                 let title = '';
                 if (nameMatch) {
                     try {
