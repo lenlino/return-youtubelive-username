@@ -34,6 +34,10 @@ chrome.runtime.onMessage.addListener((message) => {
     if (message.type === 'nicknameUpdated') {
         window.postMessage({ type: 'loadNicknames' }, '*');
     }
+
+    if (message.type === 'filterSettingsChanged') {
+        window.postMessage({ type: 'filterSettingsChanged' }, '*');
+    }
 });
 
 // Handle requests for current display mode from injected script
@@ -94,6 +98,89 @@ window.addEventListener('message', async (event) => {
             }, '*');
         } catch (error) {
             console.error('[Content Script] Error loading nicknames:', error);
+        }
+    }
+
+    if (event.data.type === 'getFilterSettings') {
+        try {
+            const result = await chrome.storage.local.get({
+                filterMode: 'all',
+                allowList: {},
+                blockList: {}
+            });
+            window.postMessage({
+                type: 'filterSettingsLoaded',
+                filterMode: result.filterMode,
+                allowList: result.allowList,
+                blockList: result.blockList
+            }, '*');
+        } catch (error) {
+            console.error('[Content Script] Error loading filter settings:', error);
+        }
+    }
+
+    if (event.data.type === 'resolveVideoOwner') {
+        try {
+            const { videoId, messageId } = event.data;
+            const OWNER_CACHE_DURATION = 7 * 24 * 60 * 60 * 1000;
+
+            const stored = await chrome.storage.local.get(['videoOwnerCache']);
+            const cache = stored.videoOwnerCache || {};
+            const entry = cache[videoId];
+
+            if (entry && (Date.now() - entry.timestamp) < OWNER_CACHE_DURATION) {
+                window.postMessage({
+                    type: 'videoOwnerResolved',
+                    messageId: messageId,
+                    success: true,
+                    channelId: entry.channelId,
+                    title: entry.title
+                }, '*');
+                return;
+            }
+
+            chrome.runtime.sendMessage({
+                type: 'fetchVideoOwner',
+                videoId: videoId
+            }, async (response) => {
+                if (chrome.runtime.lastError || !response || !response.success) {
+                    window.postMessage({
+                        type: 'videoOwnerResolved',
+                        messageId: messageId,
+                        success: false
+                    }, '*');
+                    return;
+                }
+
+                cache[videoId] = {
+                    channelId: response.channelId,
+                    title: response.title,
+                    timestamp: Date.now()
+                };
+                await chrome.storage.local.set({ videoOwnerCache: cache });
+
+                window.postMessage({
+                    type: 'videoOwnerResolved',
+                    messageId: messageId,
+                    success: true,
+                    channelId: response.channelId,
+                    title: response.title
+                }, '*');
+            });
+        } catch (error) {
+            console.error('[Content Script] Error resolving video owner:', error);
+        }
+    }
+
+    if (event.data.type === 'broadcasterDetected') {
+        try {
+            chrome.runtime.sendMessage({
+                type: 'broadcasterDetected',
+                channelId: event.data.channelId,
+                title: event.data.title
+            }).catch(() => {});
+        } catch (error) {
+            console.error('[Content Script] Error reporting broadcaster:', error);
         }
     }
 
