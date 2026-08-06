@@ -111,6 +111,19 @@
     };
 
     const getVideoId = () => {
+        // A same-origin parent's location always reflects the video being watched,
+        // even after an SPA navigation that left this frame in place
+        try {
+            if (window.parent !== window) {
+                const v = new URLSearchParams(window.parent.location.search).get('v');
+                if (v) return v;
+                const studio = window.parent.location.pathname.match(/\/video\/([^/]+)\//);
+                if (studio) return studio[1];
+            }
+        } catch {
+            // Cross-origin; fall through
+        }
+
         const own = new URLSearchParams(window.location.search).get('v');
         if (own) return own;
 
@@ -128,18 +141,25 @@
     };
 
     const resolveBroadcaster = async () => {
-        // Same-origin parent frame holds the player data on a normal watch page
+        const videoId = getVideoId();
+
+        // The parent frame holds the player data on a normal watch page, but YouTube
+        // leaves it pointing at the previous video after an SPA navigation, so only
+        // trust it when it describes the video we are actually watching
         try {
             const host = window.parent !== window ? window.parent : window;
             const details = host.ytInitialPlayerResponse?.videoDetails;
-            if (details?.channelId) {
-                return { channelId: details.channelId, title: details.author || '' };
+            if (details?.channelId && (!videoId || details.videoId === videoId)) {
+                return {
+                    channelId: details.channelId,
+                    title: details.author || '',
+                    videoId: details.videoId || videoId
+                };
             }
         } catch {
             // Cross-origin or not available; fall through
         }
 
-        const videoId = getVideoId();
         if (!videoId) return null;
 
         return new Promise((resolve) => {
@@ -149,7 +169,7 @@
                 if (event.data.type === 'videoOwnerResolved' && event.data.messageId === messageId) {
                     window.removeEventListener('message', handler);
                     resolve(event.data.success
-                        ? { channelId: event.data.channelId, title: event.data.title || '' }
+                        ? { channelId: event.data.channelId, title: event.data.title || '', videoId: videoId }
                         : null);
                 }
             };
@@ -462,7 +482,8 @@
             window.postMessage({
                 type: 'broadcasterDetected',
                 channelId: broadcaster.channelId,
-                title: broadcaster.title
+                title: broadcaster.title,
+                videoId: broadcaster.videoId || ''
             }, '*');
             if (DEBUG) console.log(`[YT Handle Enhancer] Broadcaster: ${broadcaster.title} (${broadcaster.channelId})`);
         } else if (DEBUG) {

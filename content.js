@@ -177,7 +177,8 @@ window.addEventListener('message', async (event) => {
             chrome.runtime.sendMessage({
                 type: 'broadcasterDetected',
                 channelId: event.data.channelId,
-                title: event.data.title
+                title: event.data.title,
+                videoId: event.data.videoId
             }).catch(() => {});
         } catch (error) {
             console.error('[Content Script] Error reporting broadcaster:', error);

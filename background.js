@@ -85,7 +85,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             const broadcasters = result.broadcasters || {};
             broadcasters[tabId] = {
                 channelId: message.channelId,
-                title: message.title || ''
+                title: message.title || '',
+                videoId: message.videoId || ''
             };
             chrome.storage.session.set({ broadcasters });
         });

@@ -119,10 +119,27 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
 
+    const videoIdFromUrl = (url) => {
+        try {
+            const parsed = new URL(url);
+            const v = parsed.searchParams.get('v');
+            if (v) return v;
+            const studio = parsed.pathname.match(/\/video\/([^/]+)\//);
+            if (studio) return studio[1];
+        } catch {
+            return null;
+        }
+        return null;
+    };
+
     const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
     if (activeTab) {
         const session = await chrome.storage.session.get(['broadcasters']);
-        broadcaster = (session.broadcasters || {})[activeTab.id] || null;
+        const stored = (session.broadcasters || {})[activeTab.id] || null;
+        // Drop the entry if the tab has since moved to another video
+        const currentVideoId = videoIdFromUrl(activeTab.url || '');
+        const isStale = stored && stored.videoId && currentVideoId && stored.videoId !== currentVideoId;
+        broadcaster = isStale ? null : stored;
     }
     await renderBroadcaster();
 
