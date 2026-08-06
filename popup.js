@@ -68,6 +68,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!broadcaster) {
             broadcasterName.textContent = chrome.i18n.getMessage('broadcasterNotDetected');
             toggleBtn.textContent = chrome.i18n.getMessage('addToList');
+            toggleBtn.classList.remove('registered');
             toggleBtn.disabled = true;
             return;
         }
@@ -76,6 +77,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (stored.filterMode === 'all') {
             toggleBtn.textContent = chrome.i18n.getMessage('addToList');
+            toggleBtn.classList.remove('registered');
             toggleBtn.disabled = true;
             return;
         }
@@ -83,6 +85,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const list = stored.filterMode === 'allow' ? stored.allowList : stored.blockList;
         const registered = list[broadcaster.channelId] !== undefined;
         toggleBtn.textContent = chrome.i18n.getMessage(registered ? 'removeFromList' : 'addToList');
+        toggleBtn.classList.toggle('registered', registered);
         toggleBtn.disabled = false;
     };
 

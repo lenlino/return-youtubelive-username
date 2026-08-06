@@ -149,6 +149,14 @@ h1 {
     background-color: #1565c0;
 }
 
+#toggleBroadcaster.registered {
+    background-color: #f44336;
+}
+
+#toggleBroadcaster.registered:hover:not(:disabled) {
+    background-color: #d32f2f;
+}
+
 #toggleBroadcaster:disabled {
     background-color: #dadce0;
     color: #9aa0a6;
